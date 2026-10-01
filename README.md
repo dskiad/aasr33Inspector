@@ -6,13 +6,11 @@ A standalone HTML application for the **Report of the Grand Inspector** and the 
 
 Primary live page:
 
-https://dskiad.github.io/aasr33Inspector-/
+https://dskiad.github.io/aasr33Inspector/
 
 Repository:
 
-https://github.com/dskiad/aasr33Inspector-
-
-> Note: if the repository remains private, GitHub Pages availability depends on the account's Pages settings for private repositories. If the page does not open publicly, make the repository public or enable GitHub Pages for private repositories from **Settings > Pages**.
+https://github.com/dskiad/aasr33Inspector
 
 ## Purpose
 
