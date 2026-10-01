@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Παρουσίες Εργαστηρίων ΑΑΣΤ</title>
+  <style>
+    :root {
+      --bg: #f5f1ea;
+      --paper: #fffdf8;
+      --ink: #231f20;
+      --muted: #756b61;
+      --wine: #54131c;
+      --wine-2: #6e1b27;
+      --gold: #c8963e;
+      --line: #d8c5a5;
+      --soft: #f8efe2;
+      --ok: #1f7a4d;
+      --danger: #a33a31;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(200,150,62,.18), transparent 34rem),
+        linear-gradient(180deg, #faf7f1 0%, var(--bg) 100%);
+      color: var(--ink);
+    }
+
+    .app {
+      width: min(1180px, calc(100% - 28px));
+      margin: 24px auto 48px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #171313, #351016 70%, #171313);
+      color: #fff7e8;
+      border: 1px solid var(--gold);
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 16px 40px rgba(50, 26, 10, .16);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      max-width: 860px;
+      color: #eadfcc;
+      line-height: 1.45;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0;
+      align-items: center;
+    }
+
+    button, .file-label {
+      border: 1px solid var(--wine);
+      background: var(--wine);
+      color: white;
+      border-radius: 7px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 42px;
+    }
+
+    button.secondary, .file-label {
+      background: var(--paper);
+      color: var(--wine);
+      border-color: var(--line);
+    }
+
+    button.danger {
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    button:hover, .file-label:hover { filter: brightness(.96); }
+
+    input[type="file"] { display: none; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .metric {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .metric strong {
+      font-size: 24px;
+      color: var(--wine);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.4fr;
+      gap: 10px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: white;
+      color: var(--ink);
+      font: inherit;
+      padding: 9px 10px;
+    }
+
+    textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    .table-wrap {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+
+    th {
+      background: var(--wine);
+      color: white;
+      text-align: left;
+      padding: 12px 10px;
+      font-size: 13px;
+      border-bottom: 2px solid var(--gold);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td {
+      vertical-align: top;
+      padding: 10px;
+      border-bottom: 1px solid #eadbc3;
+    }
+
+    tr:nth-child(even) td { background: #fffaf1; }
+
+    .date-col { width: 145px; }
+    .workshop-col { width: 165px; }
+    .attendance-col { width: 115px; }
+    .actions-col { width: 300px; }
+    .notes-col { width: 260px; }
+
+    .checks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px 10px;
+      margin-bottom: 8px;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .check input {
+      width: auto;
+      accent-color: var(--wine);
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      min-height: 34px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .status {
+      min-height: 22px;
+      color: var(--ok);
+      font-weight: 700;
+      margin: 8px 0 0;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 760px) {
+      .app { width: min(100% - 16px, 1180px); margin-top: 12px; }
+      header { padding: 18px; }
+      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filters { grid-template-columns: 1fr; }
+      .toolbar button, .file-label { flex: 1 1 150px; }
+    }
+
+    @media print {
+      body { background: white; }
+      .app { width: 100%; margin: 0; }
+      header {
+        color: var(--ink);
+        background: white;
+        box-shadow: none;
+        border-color: var(--gold);
+      }
+      .eyebrow, h1 { color: var(--wine); }
+      .subtitle { color: var(--ink); }
+      .toolbar, .filters, .row-actions, .small, .status { display: none !important; }
+      .summary { grid-template-columns: repeat(4, 1fr); }
+      .table-wrap { border: none; overflow: visible; }
+      table { min-width: 0; font-size: 10px; }
+      th { position: static; }
+      input, textarea, select {
+        border: none;
+        padding: 0;
+        background: transparent;
+      }
+      textarea { height: auto; min-height: 0; }
+      .checks { display: block; }
+      .check { display: inline-block; margin-right: 8px; }
+      .check input:not(:checked), .check input:not(:checked) + span { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <p class="eyebrow">Αρχαίος και Αποδεδεγμένος Σκωτικός Τύπος</p>
+      <h1>Παρουσίες και Διοικητικές Πράξεις Εργαστηρίων</h1>
+      <p class="subtitle">
+        Πίνακας παρακολούθησης εργασιών για τα Εργαστήρια «Μυσταγωγία» υπ' αριθ. 5
+        και «Φως» υπ' αριθ. 14, με αριθμό παρουσιών και καταγραφή πράξεων ανά ημερομηνία.
+      </p>
+    </header>
+
+    <section class="toolbar" aria-label="Εργαλεία">
+      <button type="button" id="addRow">+ Νέα ημερομηνία</button>
+      <button type="button" class="secondary" id="saveNow">Αποθήκευση</button>
+      <button type="button" class="secondary" id="printPage">Εκτύπωση / PDF</button>
+      <button type="button" class="secondary" id="downloadCsv">Εξαγωγή CSV</button>
+      <button type="button" class="secondary" id="downloadJson">Εξαγωγή JSON</button>
+      <label class="file-label" for="importJson">Εισαγωγή JSON</label>
+      <input type="file" id="importJson" accept="application/json,.json">
+      <button type="button" class="danger" id="resetData">Καθαρισμός</button>
+    </section>
+
+    <section class="summary" aria-label="Σύνοψη">
+      <div class="metric"><span>Σύνολο ημερομηνιών</span><strong id="metricRows">0</strong></div>
+      <div class="metric"><span>Σύνολο παρουσιών</span><strong id="metricAttendance">0</strong></div>
+      <div class="metric"><span>Μυσταγωγία</span><strong id="metricMystagogia">0</strong></div>
+      <div class="metric"><span>Φως</span><strong id="metricFos">0</strong></div>
+    </section>
+
+    <section class="filters" aria-label="Φίλτρα">
+      <div>
+        <label for="workshopFilter">Φίλτρο εργαστηρίου</label>
+        <select id="workshopFilter">
+          <option value="">Όλα τα εργαστήρια</option>
+          <option value="Μυσταγωγία υπ' αρ. 5">Μυσταγωγία υπ' αρ. 5</option>
+          <option value="Φως υπ' αρ. 14">Φως υπ' αρ. 14</option>
+        </select>
+      </div>
+      <div>
+        <label for="actionFilter">Φίλτρο πράξης</label>
+        <select id="actionFilter">
+          <option value="">Όλες οι πράξεις</option>
+          <option value="Μύηση">Μύηση</option>
+          <option value="Ομιλία">Ομιλία</option>
+          <option value="Ψηφοφορία">Ψηφοφορία</option>
+          <option value="Εγκατάσταση">Εγκατάσταση</option>
+          <option value="Διοικητική ενημέρωση">Διοικητική ενημέρωση</option>
+          <option value="Άλλη πράξη">Άλλη πράξη</option>
+        </select>
+      </div>
+      <div>
+        <label for="searchBox">Αναζήτηση</label>
+        <input id="searchBox" type="search" placeholder="Π.χ. βαθμός, ομιλία, εγκατάσταση, σημείωση">
+      </div>
+    </section>
+
+    <section class="table-wrap" aria-label="Πίνακας παρουσιών">
+      <table>
+        <thead>
+          <tr>
+            <th class="date-col">Ημερομηνία</th>
+            <th class="workshop-col">Εργαστήριο</th>
+            <th class="attendance-col">Παρουσίες</th>
+            <th class="actions-col">Διοικητική πράξη</th>
+            <th class="notes-col">Περιγραφή / σημειώσεις</th>
+            <th>Ενέργειες</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </section>
+
+    <p class="status" id="status"></p>
+    <p class="small">
+      Τα στοιχεία αποθηκεύονται τοπικά στον browser της συσκευής. Για αρχείο ή μεταφορά σε άλλη συσκευή,
+      χρησιμοποίησε την εξαγωγή JSON ή CSV.
+    </p>
+  </main>
+
+  <template id="rowTemplate">
+    <tr>
+      <td>
+        <input data-field="date" type="date">
+      </td>
+      <td>
+        <select data-field="workshop">
+          <option value="Μυσταγωγία υπ' αρ. 5">Μυσταγωγία υπ' αρ. 5</option>
+          <option value="Φως υπ' αρ. 14">Φως υπ' αρ. 14</option>
+          <option value="Άλλο">Άλλο</option>
+        </select>
+      </td>
+      <td>
+        <input data-field="attendance" type="number" min="0" step="1" placeholder="0">
+      </td>
+      <td>
+        <div class="checks">
+          <label class="check"><input type="checkbox" value="Μύηση"><span>Μύηση</span></label>
+          <label class="check"><input type="checkbox" value="Ομιλία"><span>Ομιλία</span></label>
+          <label class="check"><input type="checkbox" value="Ψηφοφορία"><span>Ψηφοφορία</span></label>
+          <label class="check"><input type="checkbox" value="Εγκατάσταση"><span>Εγκατάσταση</span></label>
+          <label class="check"><input type="checkbox" value="Διοικητική ενημέρωση"><span>Διοικητική ενημέρωση</span></label>
+          <label class="check"><input type="checkbox" value="Άλλη πράξη"><span>Άλλη πράξη</span></label>
+        </div>
+        <input data-field="customAction" type="text" placeholder="Άλλη πράξη / ελεύθερο κείμενο">
+      </td>
+      <td>
+        <textarea data-field="notes" placeholder="Περιγραφή πράξης, βαθμός, αποτέλεσμα ψηφοφορίας, ομιλητής κλπ."></textarea>
+      </td>
+      <td>
+        <div class="row-actions">
+          <button type="button" class="secondary icon-btn duplicate">Αντιγραφή</button>
+          <button type="button" class="danger icon-btn remove">Διαγραφή</button>
+        </div>
+      </td>
+    </tr>
+  </template>
+
+  <script>
+    const STORAGE_KEY = "aasr-parousies-ergastirion-v1";
+    const rowsEl = document.getElementById("rows");
+    const template = document.getElementById("rowTemplate");
+    const statusEl = document.getElementById("status");
+
+    const defaultRows = [
+      { date: "2026-11-04", workshop: "Μυσταγωγία υπ' αρ. 5", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2026-12-02", workshop: "Μυσταγωγία υπ' αρ. 5", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2027-02-03", workshop: "Μυσταγωγία υπ' αρ. 5", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2027-03-03", workshop: "Μυσταγωγία υπ' αρ. 5", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2027-04-07", workshop: "Μυσταγωγία υπ' αρ. 5", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2027-05-05", workshop: "Μυσταγωγία υπ' αρ. 5", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2026-10-13", workshop: "Φως υπ' αρ. 14", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2026-11-10", workshop: "Φως υπ' αρ. 14", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2026-12-08", workshop: "Φως υπ' αρ. 14", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2027-01-12", workshop: "Φως υπ' αρ. 14", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2027-02-09", workshop: "Φως υπ' αρ. 14", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2027-03-09", workshop: "Φως υπ' αρ. 14", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2027-04-13", workshop: "Φως υπ' αρ. 14", attendance: "", actions: [], customAction: "", notes: "" },
+      { date: "2027-05-11", workshop: "Φως υπ' αρ. 14", attendance: "", actions: [], customAction: "", notes: "" }
+    ];
+
+    function showStatus(message) {
+      statusEl.textContent = message;
+      window.clearTimeout(showStatus.timer);
+      showStatus.timer = window.setTimeout(() => { statusEl.textContent = ""; }, 2400);
+    }
+
+    function loadRows() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        return Array.isArray(saved) ? saved : defaultRows;
+      } catch {
+        return defaultRows;
+      }
+    }
+
+    function getRowData(tr) {
+      return {
+        date: tr.querySelector('[data-field="date"]').value,
+        workshop: tr.querySelector('[data-field="workshop"]').value,
+        attendance: tr.querySelector('[data-field="attendance"]').value,
+        actions: Array.from(tr.querySelectorAll('.checks input:checked')).map(input => input.value),
+        customAction: tr.querySelector('[data-field="customAction"]').value.trim(),
+        notes: tr.querySelector('[data-field="notes"]').value.trim()
+      };
+    }
+
+    function getAllData() {
+      return Array.from(rowsEl.querySelectorAll("tr")).map(getRowData);
+    }
+
+    function saveRows(silent = false) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(getAllData()));
+      updateSummary();
+      if (!silent) showStatus("Αποθηκεύτηκε.");
+    }
+
+    function createRow(data = {}) {
+      const fragment = template.content.cloneNode(true);
+      const tr = fragment.querySelector("tr");
+      tr.querySelector('[data-field="date"]').value = data.date || "";
+      tr.querySelector('[data-field="workshop"]').value = data.workshop || "Μυσταγωγία υπ' αρ. 5";
+      tr.querySelector('[data-field="attendance"]').value = data.attendance || "";
+      tr.querySelector('[data-field="customAction"]').value = data.customAction || "";
+      tr.querySelector('[data-field="notes"]').value = data.notes || "";
+      const actions = new Set(data.actions || []);
+      tr.querySelectorAll('.checks input').forEach(input => {
+        input.checked = actions.has(input.value);
+      });
+      tr.addEventListener("input", () => saveRows(true));
+      tr.addEventListener("change", () => {
+        saveRows(true);
+        applyFilters();
+      });
+      tr.querySelector(".remove").addEventListener("click", () => {
+        tr.remove();
+        saveRows();
+        applyFilters();
+      });
+      tr.querySelector(".duplicate").addEventListener("click", () => {
+        rowsEl.insertBefore(createRow(getRowData(tr)), tr.nextSibling);
+        saveRows();
+        applyFilters();
+      });
+      return tr;
+    }
+
+    function render(data) {
+      rowsEl.innerHTML = "";
+      data.forEach(row => rowsEl.appendChild(createRow(row)));
+      updateSummary();
+      applyFilters();
+    }
+
+    function updateSummary() {
+      const data = getAllData();
+      const totalAttendance = data.reduce((sum, row) => sum + (parseInt(row.attendance, 10) || 0), 0);
+      const mystagogia = data
+        .filter(row => row.workshop === "Μυσταγωγία υπ' αρ. 5")
+        .reduce((sum, row) => sum + (parseInt(row.attendance, 10) || 0), 0);
+      const fos = data
+        .filter(row => row.workshop === "Φως υπ' αρ. 14")
+        .reduce((sum, row) => sum + (parseInt(row.attendance, 10) || 0), 0);
+      document.getElementById("metricRows").textContent = data.length;
+      document.getElementById("metricAttendance").textContent = totalAttendance;
+      document.getElementById("metricMystagogia").textContent = mystagogia;
+      document.getElementById("metricFos").textContent = fos;
+    }
+
+    function applyFilters() {
+      const workshop = document.getElementById("workshopFilter").value;
+      const action = document.getElementById("actionFilter").value;
+      const query = document.getElementById("searchBox").value.trim().toLowerCase();
+      rowsEl.querySelectorAll("tr").forEach(tr => {
+        const data = getRowData(tr);
+        const haystack = [
+          data.date,
+          data.workshop,
+          data.attendance,
+          data.customAction,
+          data.notes,
+          ...data.actions
+        ].join(" ").toLowerCase();
+        const visible =
+          (!workshop || data.workshop === workshop) &&
+          (!action || data.actions.includes(action) || data.customAction.includes(action)) &&
+          (!query || haystack.includes(query));
+        tr.style.display = visible ? "" : "none";
+      });
+    }
+
+    function download(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function csvEscape(value) {
+      return `"${String(value ?? "").replaceAll('"', '""')}"`;
+    }
+
+    document.getElementById("addRow").addEventListener("click", () => {
+      rowsEl.appendChild(createRow({ date: "", workshop: "Μυσταγωγία υπ' αρ. 5" }));
+      saveRows();
+      applyFilters();
+    });
+
+    document.getElementById("saveNow").addEventListener("click", () => saveRows());
+    document.getElementById("printPage").addEventListener("click", () => window.print());
+
+    document.getElementById("downloadJson").addEventListener("click", () => {
+      download("parousies_ergastirion_aasr.json", JSON.stringify(getAllData(), null, 2), "application/json;charset=utf-8");
+    });
+
+    document.getElementById("downloadCsv").addEventListener("click", () => {
+      const header = ["Ημερομηνία", "Εργαστήριο", "Παρουσίες", "Πράξεις", "Άλλη πράξη", "Σημειώσεις"];
+      const lines = [header.map(csvEscape).join(",")];
+      getAllData().forEach(row => {
+        lines.push([
+          row.date,
+          row.workshop,
+          row.attendance,
+          row.actions.join(" | "),
+          row.customAction,
+          row.notes
+        ].map(csvEscape).join(","));
+      });
+      download("parousies_ergastirion_aasr.csv", "\ufeff" + lines.join("\n"), "text/csv;charset=utf-8");
+    });
+
+    document.getElementById("importJson").addEventListener("change", event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(reader.result);
+          if (!Array.isArray(imported)) throw new Error("Invalid JSON");
+          render(imported);
+          saveRows();
+          showStatus("Το JSON εισήχθη επιτυχώς.");
+        } catch {
+          showStatus("Δεν ήταν δυνατή η εισαγωγή του αρχείου.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    });
+
+    document.getElementById("resetData").addEventListener("click", () => {
+      if (!confirm("Να διαγραφούν τα αποθηκευμένα στοιχεία και να επανέλθει το αρχικό πρόγραμμα;")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      render(defaultRows);
+      saveRows();
+    });
+
+    ["workshopFilter", "actionFilter", "searchBox"].forEach(id => {
+      document.getElementById(id).addEventListener("input", applyFilters);
+      document.getElementById(id).addEventListener("change", applyFilters);
+    });
+
+    render(loadRows());
+  </script>
+</body>
+</html>
